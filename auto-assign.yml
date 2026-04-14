@@ -1,0 +1,40 @@
+name: Auto Assign
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+
+  # Asigna cada issue nuevo a un miembro del equipo de forma aleatoria
+  assign-issue:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: 'Auto-assign issue to team member'
+        uses: pozil/auto-assign-issue@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # Añade aquí los usernames de todos los miembros de la asociación
+          assignees: aiambo08, miembro2, miembro3, miembro4, miembroN
+          # Cuántas personas se asignan por issue (1 = rotación aleatoria)
+          numOfAssignee: 1
+
+  # Asigna cada PR a dos revisores para garantizar revisión cruzada
+  assign-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: 'Auto-assign PR reviewers'
+        uses: pozil/auto-assign-issue@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          assignees: aiambo08, miembro2, miembro3, miembro4, miembroN
+          # 2 revisores por PR: más seguro para proyectos colaborativos
+          numOfAssignee: 2
